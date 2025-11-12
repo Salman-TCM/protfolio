@@ -56,27 +56,29 @@ const Navigation = ({ currentSection, onSectionChange }: NavigationProps) => {
             <div className="w-2 h-2 bg-neon-green animate-blink"></div>
           </motion.div>
 
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <motion.button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`px-3 py-2 text-xs font-mono uppercase tracking-wider transition-all duration-300 group ${
-                  currentSection === item.id
-                    ? 'text-neon-cyan border-b-2 border-neon-cyan'
-                    : 'text-neon-cyan/70 hover:text-neon-cyan'
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="relative">
-                  {item.label}
-                  <span className="absolute -bottom-6 left-0 text-[10px] text-neon-purple/50 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {item.command}
+          <div className="hidden md:flex items-center justify-end flex-1 ml-8">
+            <div className="flex items-center space-x-1">
+              {navItems.map((item) => (
+                <motion.button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`px-3 py-2 text-xs font-mono uppercase tracking-wider transition-all duration-300 group ${
+                    currentSection === item.id
+                      ? 'text-neon-cyan border-b-2 border-neon-cyan'
+                      : 'text-neon-cyan/70 hover:text-neon-cyan'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="relative">
+                    {item.label}
+                    <span className="absolute -bottom-6 left-0 text-[10px] text-neon-purple/50 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      {item.command}
+                    </span>
                   </span>
-                </span>
-              </motion.button>
-            ))}
+                </motion.button>
+              ))}
+            </div>
           </div>
 
           <motion.div

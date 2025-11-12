@@ -21,7 +21,7 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
   ]
 
   return (
-    <div className="fixed bottom-6 sm:bottom-8 left-6 sm:left-8 z-50">
+    <div className="fixed top-6 sm:top-8 right-6 sm:right-8 z-50 nav-top-right">
       {/* Main Toggle Button - Enhanced */}
       <motion.button
         whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 255, 247, 0.6)' }}
@@ -48,7 +48,7 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="absolute bottom-14 sm:bottom-16 left-0 bg-black/90 border border-neon-cyan/30 rounded-lg p-3 sm:p-4 backdrop-blur-sm max-w-[90vw] sm:max-w-none"
+            className="absolute top-14 sm:top-16 right-0 bg-black/90 border border-neon-cyan/30 rounded-lg p-3 sm:p-4 backdrop-blur-sm max-w-[90vw] sm:max-w-none nav-menu-top-right"
           >
             <div className="text-xs text-neon-amber mb-2 sm:mb-3 text-center font-mono">
               QUICK NAVIGATION
@@ -89,7 +89,7 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
-          className="absolute bottom-14 sm:bottom-16 left-0 bg-black/80 text-neon-cyan text-xs p-2 rounded border border-neon-cyan/30 backdrop-blur-sm pointer-events-none hidden sm:block"
+          className="absolute top-14 sm:top-16 right-0 bg-black/80 text-neon-cyan text-xs p-2 rounded border border-neon-cyan/30 backdrop-blur-sm pointer-events-none hidden sm:block nav-hint-top-right"
         >
           Click for navigation
         </motion.div>

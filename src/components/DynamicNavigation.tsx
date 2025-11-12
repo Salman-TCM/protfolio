@@ -87,7 +87,7 @@ const DynamicNavigation = ({ currentSection, onSectionChange }: DynamicNavigatio
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+            {/* Logo - Left side */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="flex items-center space-x-2 cursor-pointer"
@@ -101,27 +101,29 @@ const DynamicNavigation = ({ currentSection, onSectionChange }: DynamicNavigatio
               </span>
             </motion.div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-1">
-              {enabledSections.map((section) => (
-                <motion.button
-                  key={section.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`px-4 py-2 font-mono text-sm transition-all duration-300 rounded ${
-                    currentSection === section.id
-                      ? 'text-neon-magenta border border-neon-magenta/50 bg-neon-magenta/10'
-                      : 'text-neon-cyan/70 hover:text-neon-cyan hover:bg-neon-cyan/5'
-                  }`}
-                >
-                  <span className="mr-2">{getSectionIcon(section.type)}</span>
-                  {section.title.toUpperCase()}
-                </motion.button>
-              ))}
+            {/* Desktop Navigation - Right side */}
+            <div className="hidden md:flex items-center justify-end flex-1 ml-8">
+              <div className="flex items-center space-x-1">
+                {enabledSections.map((section) => (
+                  <motion.button
+                    key={section.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => scrollToSection(section.id)}
+                    className={`px-4 py-2 font-mono text-sm transition-all duration-300 rounded ${
+                      currentSection === section.id
+                        ? 'text-neon-magenta border border-neon-magenta/50 bg-neon-magenta/10'
+                        : 'text-neon-cyan/70 hover:text-neon-cyan hover:bg-neon-cyan/5'
+                    }`}
+                  >
+                    <span className="mr-2">{getSectionIcon(section.type)}</span>
+                    {section.title.toUpperCase()}
+                  </motion.button>
+                ))}
+              </div>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Right side */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -162,7 +164,7 @@ const DynamicNavigation = ({ currentSection, onSectionChange }: DynamicNavigatio
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-16 left-0 right-0 z-30 md:hidden"
+            className="fixed top-16 right-0 left-0 z-30 md:hidden"
           >
             <div className="terminal-window mx-4 mt-2">
               <div className="p-4">
@@ -212,8 +214,8 @@ const DynamicNavigation = ({ currentSection, onSectionChange }: DynamicNavigatio
         )}
       </AnimatePresence>
 
-      {/* Section Indicator */}
-      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-30 hidden lg:block">
+      {/* Section Indicator - Moved to left side since nav is now on right */}
+      <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-30 hidden lg:block">
         <div className="space-y-3">
           {enabledSections.map((section) => (
             <motion.button

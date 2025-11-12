@@ -172,4 +172,28 @@
       linear-gradient(90deg, rgba(0, 255, 247, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
   }
+
+  /* Navigation positioning overrides */
+  .nav-top-right {
+    position: fixed !important;
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 50 !important;
+  }
+
+  .nav-menu-top-right {
+    position: absolute !important;
+    top: 3.5rem !important;
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  .nav-hint-top-right {
+    position: absolute !important;
+    top: 3.5rem !important;
+    right: 0 !important;
+    left: auto !important;
+  }
 }
