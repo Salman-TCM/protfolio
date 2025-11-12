@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  body {
+    background-color: #0A0A0A;
+    color: #00FFF7;
+    font-family: 'IBM Plex Mono', monospace;
+    overflow: hidden;
+    height: 100%;
+    /* Responsive design improvements */
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: #00FFF7;
+    color: #0A0A0A;
+  }
+
+  /* Global scrollbar - hidden by default */
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  /* Terminal scrollbar - visible and styled */
+  .terminal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .terminal-content::-webkit-scrollbar {
+      width: 12px;
+    }
+  }
+
+  .terminal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 255, 247, 0.2);
+  }
+
+  .terminal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00FFF7, #00CCD7);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 255, 247, 0.5);
+    border: 1px solid rgba(0, 255, 247, 0.3);
+  }
+
+  .terminal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FF00C8, #CC0099);
+    box-shadow: 0 0 15px rgba(255, 0, 200, 0.7);
+    border: 1px solid rgba(255, 0, 200, 0.5);
+  }
+
+  .terminal-content::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@layer components {
+  .retro-border {
+    border: 1px solid;
+    border-image: linear-gradient(45deg, #00FFF7, #FF00C8, #8B5CF6, #00FFF7) 1;
+    position: relative;
+  }
+
+  .retro-border::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #00FFF7, #FF00C8, #8B5CF6, #00FFF7);
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.5;
+    filter: blur(1px);
+  }
+
+  .terminal-window {
+    @apply bg-retro-bg border-2 border-neon-cyan rounded-lg p-2 sm:p-4 shadow-lg;
+    box-shadow: 0 0 20px rgba(0, 255, 247, 0.3), inset 0 0 20px rgba(0, 255, 247, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .terminal-text {
+    @apply font-mono text-neon-cyan;
+  }
+
+  .retro-button {
+    @apply px-4 py-2 border-2 border-neon-cyan bg-transparent text-neon-cyan font-mono uppercase tracking-wider transition-all duration-300 hover:bg-neon-cyan hover:text-retro-bg hover:shadow-lg;
+    box-shadow: 0 0 10px rgba(0, 255, 247, 0.3);
+  }
+
+  .retro-button:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 247, 0.8);
+    animation: glow 0.5s ease-in-out;
+  }
+
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 247, 0.03) 2px,
+      rgba(0, 255, 247, 0.03) 4px
+    );
+    pointer-events: none;
+    animation: scanlines 0.1s linear infinite;
+  }
+
+  .crt-effect {
+    position: relative;
+  }
+
+  .crt-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid #00FFF7;
+    white-space: nowrap;
+    animation: typewriter 4s steps(40) 1s both, blink 1s infinite;
+  }
+
+  .neon-glow {
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor,
+      0 0 20px currentColor;
+  }
+
+  .retro-grid-bg {
+    background-image: 
+      linear-gradient(rgba(0, 255, 247, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 247, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+}
