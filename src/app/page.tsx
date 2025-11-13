@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import InteractiveTerminal from '@/components/InteractiveTerminal'
 import FloatingNavigation from '@/components/FloatingNavigation'
+import FloatingSocial from '@/components/FloatingSocial'
 import StatusWidget from '@/components/StatusWidget'
 
 export default function Home() {
@@ -75,6 +76,9 @@ export default function Home() {
 
       {/* Status Widget - Outside main container for absolute positioning */}
       <StatusWidget />
+
+      {/* Floating Social Media Links */}
+      <FloatingSocial />
     </div>
   )
 }

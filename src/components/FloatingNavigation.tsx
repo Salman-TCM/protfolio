@@ -98,6 +98,7 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
           Click for navigation
         </motion.div>
       )}
+
     </div>
   )
 }
