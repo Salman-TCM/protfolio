@@ -51,7 +51,7 @@ const BootSequence = () => {
     playStep(0)
 
     return () => clearTimeout(timeoutId)
-  }, [])
+  }, [bootSteps])
 
   if (!showSequence) return null
 

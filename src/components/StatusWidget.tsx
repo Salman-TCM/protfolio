@@ -63,17 +63,29 @@ const StatusWidget = () => {
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
-          style={{ color: '#00FF00' }}
+          style={{ color: '#00FF00', fontSize: '8px', display: 'inline-block' }}
         >
-          ●
+          ██
         </motion.span>
-        <span>SYSTEM: {stats.status}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ color: '#00FF00', fontSize: '8px' }}>▪▪▪</span>
+          SYSTEM: {stats.status}
+        </span>
         <span>|</span>
-        <span>GITHUB: {stats.commits} COMMITS</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ color: '#FF00C8', fontSize: '8px' }}>◆◆</span>
+          GITHUB: {stats.commits}
+        </span>
         <span>|</span>
-        <span>UPTIME: {stats.uptime}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ color: '#00FFF7', fontSize: '8px' }}>▼▲</span>
+          UP: {stats.uptime}
+        </span>
         <span>|</span>
-        <span>LOC: {stats.location}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ color: '#8B5CF6', fontSize: '8px' }}>◈</span>
+          {stats.location}
+        </span>
         <span>|</span>
         <span style={{ color: '#FFC107' }}>
           {currentTime ? `${currentTime.toLocaleTimeString()}` : '10:18:00 AM'}

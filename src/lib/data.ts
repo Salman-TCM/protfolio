@@ -3,7 +3,7 @@
 export const portfolioData = {
   personal: {
     name: 'Salman Hossain',
-    title: 'Full-Stack Developer',
+    title: 'Software Engineer',
     age: 25,
     experience: '3+ Years',
     location: 'Earth.Planet',

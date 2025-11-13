@@ -41,7 +41,7 @@ export interface PortfolioConfig {
 export const portfolioConfig: PortfolioConfig = {
   personal: {
     name: 'Salman Hossain',
-    title: 'Full-Stack Developer',
+    title: 'Software Engineer',
     email: 'salman@example.com',
     tagline: 'Building the future, one line of code at a time',
     socialLinks: {
@@ -98,7 +98,7 @@ export const portfolioConfig: PortfolioConfig = {
       enabled: true,
       order: 2,
       config: {
-        description: 'Passionate full-stack developer with expertise in modern web technologies.',
+        description: 'Passionate Software Engineer with expertise in modern web technologies.',
         details: [
           { label: 'Location', value: 'Digital Realm' },
           { label: 'Experience', value: '3+ Years' },
@@ -107,7 +107,7 @@ export const portfolioConfig: PortfolioConfig = {
         ],
         timeline: [
           { year: '2024', title: 'Senior Developer', company: 'Tech Corp', description: 'Leading full-stack development projects' },
-          { year: '2023', title: 'Full-Stack Developer', company: 'StartupXYZ', description: 'Built scalable web applications' },
+          { year: '2023', title: 'Software Engineer', company: 'StartupXYZ', description: 'Built scalable web applications' },
           { year: '2022', title: 'Junior Developer', company: 'DevAgency', description: 'Started professional development journey' }
         ]
       }

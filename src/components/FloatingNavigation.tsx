@@ -11,30 +11,31 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const navItems = [
-    { label: 'About', command: 'about', icon: '👨‍💻', color: 'neon-cyan' },
-    { label: 'Projects', command: 'projects', icon: '💼', color: 'neon-magenta' },
-    { label: 'Skills', command: 'skills', icon: '⚡', color: 'neon-green' },
-    { label: 'Contact', command: 'contact', icon: '📧', color: 'neon-amber' },
-    { label: 'AI Chat', command: 'ai', icon: '🤖', color: 'neon-purple' },
-    { label: 'Help', command: 'help', icon: '❓', color: 'neon-cyan' },
-    { label: 'Sound', command: 'sound', icon: '🔊', color: 'neon-amber' },
+    { label: 'About', command: 'about', icon: '[i]', color: 'neon-cyan' },
+    { label: 'Projects', command: 'projects', icon: '[▣]', color: 'neon-magenta' },
+    { label: 'Skills', command: 'skills', icon: '[♦]', color: 'neon-green' },
+    { label: 'Contact', command: 'contact', icon: '[@]', color: 'neon-amber' },
+    { label: 'Download CV', command: 'cv', icon: '[↓]', color: 'neon-green' },
+    { label: 'AI Chat', command: 'ai', icon: '[◊]', color: 'neon-purple' },
+    { label: 'Help', command: 'help', icon: '[?]', color: 'neon-cyan' },
+    { label: 'Sound', command: 'sound', icon: '[♪]', color: 'neon-amber' },
   ]
 
   return (
-    <div className="fixed top-6 sm:top-8 right-6 sm:right-8 z-50 nav-top-right">
+    <div className="fixed top-4 sm:top-6 right-4 sm:right-6 z-50 nav-top-right">
       {/* Main Toggle Button - Enhanced */}
       <motion.button
         whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(0, 255, 247, 0.6)' }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 sm:w-16 sm:h-16 bg-black/80 border-2 border-neon-cyan rounded-full flex items-center justify-center text-neon-cyan hover:bg-neon-cyan/10 transition-all backdrop-blur-sm relative overflow-hidden"
+        className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 border-2 border-neon-cyan rounded-full flex items-center justify-center text-neon-cyan hover:bg-neon-cyan/10 transition-all backdrop-blur-sm relative overflow-hidden"
         style={{ boxShadow: '0 0 10px rgba(0, 255, 247, 0.3)' }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 to-transparent" />
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.3 }}
-          className="text-xl sm:text-2xl font-bold z-10"
+          className="text-lg sm:text-xl md:text-2xl font-bold z-10"
           style={{ textShadow: '0 0 10px currentColor' }}
         >
           {isOpen ? '✕' : '≡'}
@@ -76,7 +77,10 @@ const FloatingNavigation = ({ onNavigate }: FloatingNavigationProps) => {
 
             <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-neon-cyan/20">
               <div className="text-xs text-gray-500 text-center font-mono">
-                Or type commands in terminal
+                Click buttons or type commands in terminal
+              </div>
+              <div className="text-xs text-neon-cyan/70 text-center font-mono mt-1">
+                All buttons execute terminal commands
               </div>
             </div>
           </motion.div>

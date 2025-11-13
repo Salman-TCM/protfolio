@@ -130,7 +130,7 @@ Fun:
       execute: () => `USER PROFILE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Name: Salman Hossain
-Role: Full-Stack Developer
+Role: Software Engineer
 Specialization: React, Node.js, Python, AI/ML
 Location: Digital Realm
 Status: Always Learning

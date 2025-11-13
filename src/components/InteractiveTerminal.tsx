@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { siteConfig } from '@/config/site-config'
 import { useAudio } from '@/hooks/useAudio'
@@ -13,9 +13,10 @@ interface TerminalLine {
 
 interface InteractiveTerminalProps {
   onNavigate: (section: string) => void
+  externalCommand?: string | null
 }
 
-const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavigate }, ref) => {
+const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavigate, externalCommand }, ref) => {
   const [audioConfig, setAudioConfig] = useState({ enabled: true, volume: 0.3 })
   const { playKeyPress, playCommandExecute, playError, playSuccess, playStartup } = useAudio(audioConfig)
   
@@ -36,6 +37,9 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
 
   // Initialize terminal with concise boot sequence
   useEffect(() => {
+    // Clear any existing history first
+    setHistory([])
+    
     const bootSequence = [
       { content: '┌─────── PORTFOLIO OS v2.0.1 ───────┐', delay: 0 },
       { content: '│ Loading profile: SALMAN HOSSAIN   │', delay: 500 },
@@ -43,22 +47,40 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
       { content: '│ GitHub API authenticated ✓        │', delay: 1500 },
       { content: '└───────────────────────────────────┘', delay: 2000 },
       { content: '', delay: 2500 },
-      { content: '🚀 Welcome! Type "help" for commands.', delay: 3000 },
+      { content: '>> Welcome! Type "help" for commands.', delay: 3000 },
       { content: '', delay: 3500 },
-      { content: '⚡ Ready for input...', delay: 4000 }
+      { content: '> Ready for input...', delay: 4000 }
     ]
 
     // Play startup sound
     setTimeout(() => playStartup(), 500)
 
+    const timeouts: NodeJS.Timeout[] = []
+    
     bootSequence.forEach((line) => {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setHistory(prev => [...prev, { type: 'output', content: line.content }])
       }, line.delay)
+      timeouts.push(timeout)
     })
+
+    // Cleanup function
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout))
+    }
   }, [])
 
-  const commands = {
+  // Focus input when it becomes available
+  useEffect(() => {
+    const hasReadyMessage = history.some(line => line.content === '> Ready for input...')
+    if (hasReadyMessage && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [history])
+
+  const commands = useMemo(() => ({
     help: () => {
       // Check if we're on mobile (approximate, since we can't check screen size in server render)
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -67,11 +89,12 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
         return [
           '┌─ AVAILABLE COMMANDS ─┐',
           '',
-          '📊 INFO: about | whoami | skills',
-          '💼 WORK: projects | blog | services', 
-          '📞 CONTACT: contact | social',
-          '🤖 AI: ai',
-          '⚙️ SYS: clear | sound | ls | date',
+          '[i] INFO: about | whoami | skills',
+          '[■] WORK: projects | blog | services', 
+          '[@] CONTACT: contact | social',
+          '[↓] DOWNLOAD: cv | resume',
+          '[◊] AI: ai',
+          '[*] SYS: clear | sound | ls | date',
           '',
           'TIP: Use floating menu button →'
         ];
@@ -82,26 +105,31 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
         '║                 AVAILABLE COMMANDS                   ║',
         '╚══════════════════════════════════════════════════════╝',
         '',
-        '📊 INFORMATION COMMANDS:',
+        '[i] INFORMATION COMMANDS:',
         '  about        : View bio and experience',
         '  whoami       : Display user information', 
         '  skills       : Show tech stack with progress bars',
         '  status       : Show real-time system status',
         '',
-        '💼 PROJECT COMMANDS:',
+        '[■] PROJECT COMMANDS:',
         '  projects     : View featured projects',
         '  blog         : Show recent articles',
         '  services     : Available services',
         '',
-        '📞 COMMUNICATION:',
+        '[@] COMMUNICATION:',
         '  contact      : Get contact information',
         '  social       : Show social media links',
         '',
-        '🤖 AI ASSISTANT:',
+        '[↓] DOWNLOAD COMMANDS:',
+        '  cv           : Download my CV/Resume (PDF)',
+        '  resume       : Download my resume (alias for cv)',
+        '  download     : Show available downloads',
+        '',
+        '[◊] AI ASSISTANT:',
         '  ai           : Chat with AIVA retro assistant',
         '  ai help      : AI assistant commands',
         '',
-        '⚙️ SYSTEM COMMANDS:',
+        '[*] SYSTEM COMMANDS:',
         '  clear        : Clear terminal screen',
         '  theme        : Toggle theme mode',
         '  sound        : Toggle sound effects',
@@ -110,7 +138,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
         '  date         : Show current date and time',
         '  uptime       : Show system uptime',
         '',
-        '💡 TIP: Use Tab for autocomplete, ↑↓ for command history'
+        '> TIP: Use Tab for autocomplete, ↑↓ for command history'
       ];
     },
 
@@ -225,18 +253,18 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
     ],
 
     theme: () => [
-      '🎨 Theme toggle feature coming soon!',
+      '[#] Theme toggle feature coming soon!',
       'Available themes: retro-green, cyberpunk-blue, matrix-red'
     ],
 
     sound: () => [
-      `🔊 Sound effects: ${audioConfig.enabled ? 'ON' : 'OFF'}`,
+      `[♪] Sound effects: ${audioConfig.enabled ? 'ON' : 'OFF'}`,
       `Volume: ${Math.round(audioConfig.volume * 100)}%`,
       'Audio includes: key presses, commands, success/error tones'
     ],
 
     ai: () => [
-      '🤖 AIVA.EXE v1.0 loading...',
+      '[◊] AIVA.EXE v1.0 loading...',
       '',
       '████████╗ ██╗ ██╗   ██╗ █████╗ ',
       '██╔══██║ ██║ ██║   ██║██╔══██╗',
@@ -255,8 +283,55 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
       '• Type "ai help" for more commands'
     ],
 
+    cv: () => {
+      // Download CV function
+      const cvUrl = '/Salman_Hossain_CV.pdf'
+      const link = document.createElement('a')
+      link.href = cvUrl
+      link.download = 'Salman_Hossain_CV.pdf'
+      link.click()
+      
+      return [
+        '[↓] Downloading CV...',
+        '',
+        'File: Salman_Hossain_CV.pdf',
+        'Size: ~115KB',
+        'Type: PDF Document',
+        '',
+        '[OK] CV download initiated successfully!',
+        'Check your downloads folder.'
+      ]
+    },
+
+    resume: () => {
+      // Alias for cv command
+      const cvUrl = '/Salman_Hossain_CV.pdf'
+      const link = document.createElement('a')
+      link.href = cvUrl
+      link.download = 'Salman_Hossain_CV.pdf'
+      link.click()
+      
+      return [
+        '[↓] Downloading Resume...',
+        '',
+        'File: Salman_Hossain_CV.pdf',
+        'Size: ~115KB',
+        '',
+        '[OK] Resume download initiated!'
+      ]
+    },
+
+    download: () => [
+      '[↓] Available Downloads:',
+      '',
+      '[↓] cv       - Download my CV/Resume (PDF)',
+      '[↓] resume   - Download my resume (same as CV)',
+      '',
+      'Usage: Type "cv" or "resume" to download'
+    ],
+
     clear: () => 'CLEAR'
-  }
+  }), [])
 
   // Auto-suggestion logic
   useEffect(() => {
@@ -270,7 +345,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
     } else {
       setShowSuggestions(false)
     }
-  }, [input])
+  }, [input, commands])
 
   const executeCommand = async (cmd: string) => {
     const trimmedCmd = cmd.trim().toLowerCase()
@@ -280,8 +355,8 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
     // Hide suggestions
     setShowSuggestions(false)
 
-    // Add input to history
-    setHistory(prev => [...prev, { type: 'input', content: `user@portfolio:~$ ${cmd}` }])
+    // Clear previous output and show new command
+    setHistory([{ type: 'input', content: `user@portfolio:~$ ${cmd}` }])
     
     // Add to command history
     setCommandHistory(prev => [...prev, cmd])
@@ -335,7 +410,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
     } else {
       setHistory(prev => [...prev, { 
         type: 'error', 
-        content: `❌ Command not found: ${trimmedCmd}. Type 'help' for available commands.` 
+        content: `[ERROR] Command not found: ${trimmedCmd}. Type 'help' for available commands.` 
       }])
       playError()
     }
@@ -380,6 +455,13 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
     executeCommand
   }))
 
+  // Handle external commands from floating navigation
+  useEffect(() => {
+    if (externalCommand) {
+      executeCommand(externalCommand)
+    }
+  }, [externalCommand])
+
   // Auto-focus and controlled scroll
   useEffect(() => {
     if (inputRef.current) {
@@ -389,14 +471,9 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
 
   useEffect(() => {
     if (terminalRef.current) {
-      // Always scroll to top when new command is executed (when history changes significantly)
-      if (history.length > 0) {
-        const lastEntry = history[history.length - 1];
-        // Reset to top when a new command is run (input type indicates new command)
-        if (lastEntry.type === 'input') {
-          terminalRef.current.scrollTop = 0;
-        }
-      }
+      // Auto-scroll to bottom to show latest output
+      // This keeps all previous content visible and scrolls to show new content
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
       
       // Update scroll button visibility
       const { scrollTop } = terminalRef.current;
@@ -425,7 +502,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
   }
 
   return (
-    <div className="font-mono text-xs sm:text-sm leading-relaxed h-full flex flex-col bg-black/20 rounded-lg border border-neon-cyan/20 p-2 sm:p-3 overflow-hidden">
+    <div className="font-mono text-xs sm:text-sm leading-relaxed h-full flex flex-col bg-black/20 rounded-lg border border-neon-cyan/20 p-1 sm:p-2 md:p-3 overflow-hidden max-w-full">
       {/* Terminal Header - Responsive */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs mb-2 text-gray-400 border-b border-neon-cyan/30 pb-1 space-y-1 sm:space-y-0 flex-shrink-0">
         <span className="font-bold text-neon-cyan">TERMINAL.EXE v2.0.1</span>
@@ -433,16 +510,66 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
         <span className="text-xs text-neon-amber">11/12/2025, 10:18:00 AM</span>
       </div>
 
-      {/* Terminal Content - Responsive with fixed height and visible scrollbar */}
+      {/* Quick Commands - Always on top */}
+      <div className="mb-2 p-2 border border-neon-cyan/30 rounded bg-black/20 backdrop-blur-sm flex-shrink-0">
+        <div className="flex justify-between items-center mb-1">
+          <div className="text-xs text-neon-amber font-bold">[&gt;] Commands:</div>
+          <button
+            onClick={() => executeCommand('clear')}
+            className="px-2 py-1 text-xs border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-400 rounded transition-all duration-200"
+            title="Clear terminal"
+          >
+            CLEAR
+          </button>
+        </div>
+        <div className="flex items-center space-x-1 text-xs font-mono">
+          {['help', 'about', 'projects', 'skills', 'contact', 'cv', 'ai'].map((cmd, index) => (
+            <span key={cmd} className="flex items-center">
+              <button
+                onClick={() => executeCommand(cmd)}
+                className="text-neon-cyan hover:text-neon-amber transition-colors uppercase cursor-pointer"
+                style={{ textShadow: '0 0 5px currentColor' }}
+              >
+                {cmd}
+              </button>
+              {index < 6 && <span className="text-neon-cyan mx-1">|</span>}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Terminal Content - Fixed height with scrolling */}
       <div 
         ref={terminalRef}
         onScroll={handleScroll}
-        className="terminal-content flex-1 overflow-y-scroll space-y-1 mb-2 bg-black/10 rounded p-2 min-h-0 relative border border-neon-cyan/10"
+        className="terminal-content overflow-y-auto overflow-x-hidden space-y-1 mb-2 bg-transparent p-3 relative"
         style={{
+          height: 'calc(100vh - 200px)',
+          minHeight: '200px',
+          maxHeight: '75vh',
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(0, 255, 247, 0.6) rgba(0, 0, 0, 0.3)'
         }}
+        onClick={() => inputRef.current?.focus()}
       >
+        {/* Hidden input field covering entire terminal */}
+        <input
+          ref={inputRef}
+          type="text"
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value)
+            if (audioConfig.enabled && e.target.value.length > input.length) {
+              playKeyPress()
+            }
+          }}
+          onKeyDown={handleKeyDown}
+          className="fixed top-0 left-0 w-screen h-screen opacity-0 pointer-events-none z-[-1]"
+          autoComplete="off"
+          spellCheck="false"
+          disabled={isLoading}
+          autoFocus
+        />
         {/* Scroll Controls */}
         {showScrollTop && (
           <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
@@ -463,20 +590,29 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
           </div>
         )}
         {history.map((line, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`${
-              line.type === 'input' 
-                ? 'text-neon-green' 
-                : line.type === 'error'
-                ? 'text-red-400'
-                : 'text-neon-cyan'
-            }`}
-          >
-            {line.content}
-          </motion.div>
+          <div key={index}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`${
+                line.type === 'input' 
+                  ? 'text-neon-green' 
+                  : line.type === 'error'
+                  ? 'text-red-400'
+                  : 'text-neon-cyan'
+              } ${line.type === 'output' ? 'terminal-output-line' : ''} break-words whitespace-pre-wrap word-wrap`}
+              style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+            >
+              {line.content}
+            </motion.div>
+            {/* Add prompt after Ready for input */}
+            {line.content === '> Ready for input...' && (
+              <div className="mt-2">
+                <span className="text-neon-amber font-mono text-sm">user@portfolio:~$</span>
+                <span className="retro-cursor ml-1" />
+              </div>
+            )}
+          </div>
         ))}
       </div>
 
@@ -493,7 +629,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
                   setShowSuggestions(false)
                   if (inputRef.current) inputRef.current.focus()
                 }}
-                className="px-1 sm:px-2 py-1 text-xs border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan/10 rounded transition-colors"
+                className="px-2 py-1 text-xs border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan/10 rounded transition-colors font-mono"
               >
                 {suggestion}
               </button>
@@ -502,82 +638,7 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
         </div>
       )}
 
-      {/* Quick Commands - Responsive */}
-      <div className="mb-2 p-2 border border-neon-cyan/30 rounded bg-black/20 backdrop-blur-sm flex-shrink-0">
-        <div className="flex justify-between items-center mb-1">
-          <div className="text-xs text-neon-amber font-bold">⚡ Commands:</div>
-          <button
-            onClick={() => executeCommand('clear')}
-            className="px-2 py-1 text-xs border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-400 rounded transition-all duration-200"
-            title="Clear terminal"
-          >
-            CLEAR
-          </button>
-        </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-1">
-          {['help', 'about', 'projects', 'skills', 'contact', 'ai'].map((cmd) => (
-            <button
-              key={cmd}
-              onClick={() => executeCommand(cmd)}
-              className="px-1 py-1 text-xs border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan/20 hover:border-neon-cyan hover:shadow-lg rounded transition-all duration-200 font-medium uppercase tracking-wide"
-              style={{ textShadow: '0 0 5px currentColor' }}
-            >
-              {cmd}
-            </button>
-          ))}
-        </div>
-      </div>
 
-      {/* Input Line - Responsive */}
-      <div className="flex items-center space-x-2 bg-black/30 border border-neon-cyan/40 rounded px-3 py-2 backdrop-blur-sm">
-        <span className="text-neon-amber font-bold text-sm flex-shrink-0 neon-glow">user@portfolio:~$</span>
-        <input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value)
-            // Play key press sound for typing
-            if (audioConfig.enabled && e.target.value.length > input.length) {
-              playKeyPress()
-            }
-          }}
-          onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none text-neon-cyan caret-neon-cyan text-sm min-w-0 placeholder-gray-500"
-          placeholder="Type a command..."
-          autoComplete="off"
-          spellCheck="false"
-          disabled={isLoading}
-          style={{ textShadow: '0 0 5px currentColor' }}
-        />
-        {isLoading ? (
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 1 }}
-            className="w-4 h-4 border-2 border-neon-cyan border-t-transparent rounded-full flex-shrink-0"
-          />
-        ) : (
-          <motion.span
-            animate={{ opacity: [1, 0] }}
-            transition={{ repeat: Infinity, duration: 1 }}
-            className="w-2 h-4 bg-neon-cyan flex-shrink-0 neon-glow"
-          />
-        )}
-      </div>
-
-      {/* Status Bar - Responsive */}
-      <div className="flex justify-between items-center text-xs text-gray-400 mt-1 pt-1 border-t border-neon-cyan/20 flex-shrink-0">
-        <div className="hidden md:block text-neon-cyan/70 text-xs">
-          Tab: autocomplete | ↑↓: history
-        </div>
-        <div className="flex items-center space-x-2 text-xs">
-          <span className="flex items-center space-x-1">
-            <span className="text-neon-green">●</span>
-            <span className="text-neon-cyan">ONLINE</span>
-          </span>
-          <span className="text-neon-magenta">CMDS: {commandHistory.length}</span>
-        </div>
-      </div>
     </div>
   )
 })

@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Salman Hossain - Retro Portfolio',
-  description: 'Full-Stack Developer | Automation & AI Enthusiast | Cyberpunk Portfolio',
+  description: 'Software Engineer | Automation & AI Enthusiast | Cyberpunk Portfolio',
   keywords: 'developer, portfolio, retro, cyberpunk, full-stack, automation, AI',
   authors: [{ name: 'Salman Hossain' }],
 }

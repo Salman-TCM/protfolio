@@ -7,19 +7,22 @@
   html {
     color-scheme: dark;
     height: 100%;
-    overflow: hidden;
   }
   
   body {
     background-color: #0A0A0A;
     color: #00FFF7;
     font-family: 'IBM Plex Mono', monospace;
-    overflow: hidden;
     height: 100%;
     /* Responsive design improvements */
     touch-action: manipulation;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
+    /* Retro crosshair cursor */
+    cursor: crosshair;
+    /* Better text handling on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   * {
@@ -29,6 +32,23 @@
   ::selection {
     background: #00FFF7;
     color: #0A0A0A;
+  }
+
+  /* Retro cursor styles */
+  button, a, input, textarea, select {
+    cursor: pointer;
+  }
+  
+  button:hover, a:hover {
+    cursor: pointer;
+  }
+  
+  input[type="text"], textarea {
+    cursor: text;
+  }
+  
+  button:active, a:active {
+    cursor: crosshair;
   }
 
   /* Global scrollbar - hidden by default */
@@ -128,15 +148,25 @@
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 255, 247, 0.03) 2px,
-      rgba(0, 255, 247, 0.03) 4px
+      rgba(0, 255, 247, 0.01) 2px,
+      rgba(0, 255, 247, 0.01) 4px
     );
     pointer-events: none;
-    animation: scanlines 0.1s linear infinite;
+    animation: scanlines 12s linear infinite;
+  }
+  
+  @keyframes scanlines {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(10px);
+    }
   }
 
   .crt-effect {
     position: relative;
+    animation: crt-flicker 2s infinite;
   }
 
   .crt-effect::before {
@@ -146,9 +176,41 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    background: 
+      radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
     pointer-events: none;
     z-index: 1000;
+  }
+  
+  /* Light vignette effect */
+  .crt-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.1) 90%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @keyframes crt-flicker {
+    0%, 98% {
+      opacity: 1;
+    }
+    99% {
+      opacity: 0.98;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   .typewriter {
@@ -157,6 +219,23 @@
     white-space: nowrap;
     animation: typewriter 4s steps(40) 1s both, blink 1s infinite;
   }
+  
+  /* Typewriter effect for terminal output */
+  .terminal-output-line {
+    animation: typewriter-fast 0.5s steps(30) both;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  @keyframes typewriter-fast {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
 
   .neon-glow {
     text-shadow: 
@@ -164,6 +243,52 @@
       0 0 10px currentColor,
       0 0 15px currentColor,
       0 0 20px currentColor;
+  }
+
+  /* Retro pixelated block cursor */
+  .retro-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background: #00FFF7;
+    animation: cursor-blink 1s infinite, cursor-glow 2s infinite;
+    box-shadow: 
+      0 0 10px #00FFF7,
+      0 0 20px #00FFF7,
+      0 0 30px #00FFF7,
+      inset 0 0 10px rgba(0, 255, 247, 0.5);
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  @keyframes cursor-blink {
+    0%, 49% {
+      opacity: 1;
+      background: #00FFF7;
+    }
+    50%, 100% {
+      opacity: 0.3;
+      background: #00CCD7;
+    }
+  }
+
+  @keyframes cursor-glow {
+    0%, 100% {
+      box-shadow: 
+        0 0 10px #00FFF7,
+        0 0 20px #00FFF7,
+        0 0 30px #00FFF7,
+        inset 0 0 10px rgba(0, 255, 247, 0.5);
+    }
+    50% {
+      box-shadow: 
+        0 0 15px #00FFF7,
+        0 0 25px #00FFF7,
+        0 0 35px #00FFF7,
+        0 0 45px #00FFF7,
+        inset 0 0 15px rgba(0, 255, 247, 0.7);
+    }
   }
 
   .retro-grid-bg {
@@ -176,11 +301,18 @@
   /* Navigation positioning overrides */
   .nav-top-right {
     position: fixed !important;
-    top: 1.5rem !important;
-    right: 1.5rem !important;
+    top: 1rem !important;
+    right: 1rem !important;
     left: auto !important;
     bottom: auto !important;
     z-index: 50 !important;
+  }
+
+  @media (min-width: 640px) {
+    .nav-top-right {
+      top: 1.5rem !important;
+      right: 1.5rem !important;
+    }
   }
 
   .nav-menu-top-right {

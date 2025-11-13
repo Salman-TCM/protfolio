@@ -150,7 +150,7 @@ const DynamicSkillsSection = ({ config }: DynamicSkillsSectionProps) => {
                 CONTINUOUS_LEARNING.EXE
               </h3>
               <p className="text-sm font-mono text-neon-cyan/70">
-                Always exploring new technologies and pushing the boundaries of what's possible. 
+                Always exploring new technologies and pushing the boundaries of possibility. 
                 The journey of learning never ends in the rapidly evolving world of technology.
               </p>
               <div className="mt-4 flex justify-center space-x-4 text-xs font-mono">
