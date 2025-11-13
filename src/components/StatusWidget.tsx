@@ -6,10 +6,11 @@ import { motion } from 'framer-motion'
 const StatusWidget = () => {
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [stats, setStats] = useState({
-    commits: 149,
+    commits: 0,
     uptime: '3Y 241D',
     status: 'ONLINE',
-    location: 'EARTH'
+    location: 'EARTH',
+    loading: true
   })
 
   useEffect(() => {
@@ -24,13 +25,57 @@ const StatusWidget = () => {
   }, [])
 
   useEffect(() => {
-    // Simulate dynamic stats updates
-    const statsTimer = setInterval(() => {
-      setStats(prev => ({
-        ...prev,
-        commits: prev.commits + Math.floor(Math.random() * 3)
-      }))
-    }, 30000) // Update every 30 seconds
+    // Fetch GitHub stats on mount and periodically
+    const fetchGitHubStats = async () => {
+      try {
+        // Use our API route that can access private repos with authentication
+        const response = await fetch('/api/github-stats')
+        const data = await response.json()
+        
+        setStats(prev => ({
+          ...prev,
+          commits: data.totalCommits,
+          uptime: data.uptime,
+          loading: false
+        }))
+        
+        // Store in localStorage for offline access
+        if (!data.error) {
+          localStorage.setItem('githubStats', JSON.stringify({
+            commits: data.totalCommits,
+            uptime: data.uptime,
+            timestamp: Date.now()
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching GitHub stats:', error)
+        
+        // Try to use cached values from localStorage
+        const cached = localStorage.getItem('githubStats')
+        if (cached) {
+          const cachedData = JSON.parse(cached)
+          setStats(prev => ({
+            ...prev,
+            commits: cachedData.commits,
+            uptime: cachedData.uptime,
+            loading: false
+          }))
+        } else {
+          // Use fallback values if no cache
+          setStats(prev => ({
+            ...prev,
+            commits: 149,
+            loading: false
+          }))
+        }
+      }
+    }
+
+    // Fetch immediately
+    fetchGitHubStats()
+
+    // Refresh every 5 minutes
+    const statsTimer = setInterval(fetchGitHubStats, 300000)
 
     return () => clearInterval(statsTimer)
   }, [])
@@ -74,7 +119,23 @@ const StatusWidget = () => {
         <span>|</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <span style={{ color: '#FF00C8', fontSize: '8px' }}>◆◆</span>
-          GITHUB: {stats.commits}
+          GITHUB: {stats.loading ? (
+            <motion.span
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              ...
+            </motion.span>
+          ) : (
+            <motion.span
+              key={stats.commits}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {stats.commits}
+            </motion.span>
+          )}
         </span>
         <span>|</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

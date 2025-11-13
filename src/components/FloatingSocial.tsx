@@ -68,7 +68,7 @@ const FloatingSocial = () => {
             whileTap={{ scale: 0.85 }}
             className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-black/80 rounded-full flex items-center justify-center transition-all backdrop-blur-sm relative overflow-hidden group"
             style={{ 
-              border: `2px solid ${social.color}`,
+              // border: `2px solid ${social.color}`,
               color: social.color,
               boxShadow: `0 0 10px ${social.shadowColor}`
             }}
