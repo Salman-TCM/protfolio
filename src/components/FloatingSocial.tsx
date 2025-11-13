@@ -39,7 +39,7 @@ const FloatingSocial = () => {
     },
     { 
       label: 'LinkedIn', 
-      url: 'https://linkedin.com/salman', 
+      url: 'https://www.linkedin.com/in/salmanhossainbd/', 
       IconComponent: LinkedInIcon,
       hoverColor: 'rgba(255, 0, 200, 0.6)',
       shadowColor: 'rgba(255, 0, 200, 0.3)',
