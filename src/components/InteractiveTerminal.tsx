@@ -285,16 +285,16 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
 
     cv: () => {
       // Download CV function
-      const cvUrl = '/Salman_Hossain_CV.pdf'
+      const cvUrl = '/software_Engineer_update.pdf'
       const link = document.createElement('a')
       link.href = cvUrl
-      link.download = 'Salman_Hossain_CV.pdf'
+      link.download = 'software_Engineer_update.pdf'
       link.click()
       
       return [
         '[↓] Downloading CV...',
         '',
-        'File: Salman_Hossain_CV.pdf',
+        'File: software_Engineer_update.pdf',
         'Size: ~115KB',
         'Type: PDF Document',
         '',
@@ -305,16 +305,16 @@ const InteractiveTerminal = forwardRef<any, InteractiveTerminalProps>(({ onNavig
 
     resume: () => {
       // Alias for cv command
-      const cvUrl = '/Salman_Hossain_CV.pdf'
+      const cvUrl = '/software_Engineer_update.pdf'
       const link = document.createElement('a')
       link.href = cvUrl
-      link.download = 'Salman_Hossain_CV.pdf'
+      link.download = 'software_Engineer_update.pdf'
       link.click()
       
       return [
         '[↓] Downloading Resume...',
         '',
-        'File: Salman_Hossain_CV.pdf',
+        'File: software_Engineer_update.pdf',
         'Size: ~115KB',
         '',
         '[OK] Resume download initiated!'
